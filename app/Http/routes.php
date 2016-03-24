@@ -12,7 +12,7 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->welcome();
+    return "OK";
 });
 
 $app->post('/events', 'WebhookHandlerController@handle');

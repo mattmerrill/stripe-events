@@ -18,8 +18,8 @@ class CreateEventsTable extends Migration
             $table->unique('event_id');
             $table->string('event_type');
             $table->string('customer_id');
-            $table->text('payload');
-            $table->timestamps();
+            $table->mediumText('payload');
+            $table->nullableTimestamps();
         });
     }
 
