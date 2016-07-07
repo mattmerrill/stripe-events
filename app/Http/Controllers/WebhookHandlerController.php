@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Event;
 use App\StripeEventParser;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,7 @@ class WebhookHandlerController extends Controller
         $rawBody = $request->getContent();
         $postedEvent = json_decode($rawBody);
         $eventType = $postedEvent->type;
+        $eventDate = isset($postedEvent->created) ? Carbon::createFromTimestamp($postedEvent->created) : null;
 
         try {
             // Create event asap to attempt to block duplicate requests
@@ -21,6 +23,7 @@ class WebhookHandlerController extends Controller
             $event->event_id = $postedEvent->id;
             $event->payload = $rawBody;
             $event->event_type = $eventType;
+            $event->event_at = $eventDate;
             $event->save();
 
             $parser = StripeEventParser::parse($postedEvent);
@@ -35,7 +38,6 @@ class WebhookHandlerController extends Controller
                 throw $e;
             }
         }
-
 
     }
 }
